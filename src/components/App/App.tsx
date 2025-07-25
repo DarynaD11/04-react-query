@@ -10,6 +10,8 @@ import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
+import { useEffect } from "react";
+
 
 export default function App() {
   const [query, setQuery] = useState("");
@@ -37,6 +39,12 @@ export default function App() {
     setSelectedMovie(null);
   };
 
+  useEffect(() => {
+    if (isSuccess && data?.results.length === 0) {
+      toast.error("No movies found");
+    }
+  }, [isSuccess, data]);
+
   return (
     <div className={css.app}>
       <Toaster />
@@ -44,9 +52,6 @@ export default function App() {
 
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
-      {isSuccess &&
-        data?.results.length === 0 &&
-        toast.error("No movies found")}
       {isSuccess && totalPages > 1 && (
         <ReactPaginate
           pageCount={totalPages}
